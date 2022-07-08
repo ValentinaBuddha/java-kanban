@@ -91,6 +91,7 @@ public class Manager {
     protected void updateTheTask() {
         System.out.println("Введите id задачи, которую вы хотите обновить.");
         int id = scanner.nextInt();
+
         if (tasks.containsKey(id)) {
             System.out.println("Вы хотите обновить следующую задачу:");
             System.out.println(tasks.get(id));
@@ -118,6 +119,7 @@ public class Manager {
                     System.out.println("Введите значение из предложенных выше.");
                 }
             }
+
         } else if (subtasks.containsKey(id)) {
             System.out.println("Вы хотите обновить следующую задачу:");
             System.out.println(subtasks.get(id));
@@ -142,25 +144,36 @@ public class Manager {
                             subtasks.get(id).getEpicId());
                     subtasks.put(id, updateSubtask);
                 } else if (userInput == 3) {
-                    System.out.println("Введите новый id эпика.");
-                    int epicId = scanner.nextInt();
-                    SubTask updateSubtask = new SubTask(subtasks.get(id).getTitle(),
-                            subtasks.get(id).getSpecification(),
-                            subtasks.get(id).getStatus(),
-                            epicId);
-                    subtasks.put(id, updateSubtask);
+                    //удаляем из старого эпика id подзадачи
+                    int idOfPreviousEpic = subtasks.get(id).getEpicId();
+                    ArrayList<Integer> arrayOfSubtaskId = epics.get(idOfPreviousEpic).getArrayOfSubtaskId();
+                    arrayOfSubtaskId.remove((Integer) id);
+                    epics.get(idOfPreviousEpic).setArrayOfSubtaskId(arrayOfSubtaskId);
+                    //меняем id эпика в подзадаче
+                    System.out.println("Введите id нового эпика.");
+                    int updateEpicId = scanner.nextInt();
+                        SubTask updateSubtask = new SubTask(subtasks.get(id).getTitle(),
+                                subtasks.get(id).getSpecification(),
+                                subtasks.get(id).getStatus(),
+                                updateEpicId);
+                        subtasks.put(id, updateSubtask);
+                    //добавляем в новый эпик id подзадачи
+                    ArrayList<Integer> updateArrayOfSubtaskId = epics.get(updateEpicId).getArrayOfSubtaskId();
+                    updateArrayOfSubtaskId.add(id);
+                    epics.get(updateEpicId).setArrayOfSubtaskId(updateArrayOfSubtaskId);
                 } else if (userInput == 0) {
                     break;
                 } else {
                     System.out.println("Введите значение из предложенных выше.");
                 }
             }
+
         } else if (epics.containsKey(id)) {
             System.out.println("Вы хотите обновить следующую задачу:");
             System.out.println(epics.get(id));
             while (true) {
                 System.out.println("Какое поле задачи вы хотите обновить:" +
-                        " 1 - Название, 2 - Описание, 3 - Изменить список Id подзадач? Нажмите 0 для выхода.");
+                        " 1 - Название, 2 - Описание? Нажмите 0 для выхода.");
                 int userInput = scanner.nextInt();
                 if (userInput == 1) {
                     System.out.println("Введите новое название задачи.");
@@ -178,36 +191,6 @@ public class Manager {
                             epics.get(id).getStatus(),
                             epics.get(id).getArrayOfSubtaskId());
                     epics.put(id, updateEpic);
-                } else if (userInput == 3) {
-                    System.out.println("Вы хотите 1 - удалить или 2 - добавить Id подзадачи? Для выхода нажмите 0.");
-                    int command = scanner.nextInt();
-                    while (true) {
-                        if (command == 1) {
-                            System.out.println("Введите Id подзадачи.");
-                            int idOfSubtask = scanner.nextInt();
-                            ArrayList<Integer> arrayOfSubtaskId = epics.get(id).getArrayOfSubtaskId();
-                            arrayOfSubtaskId.remove(idOfSubtask);
-                            EpicTask updateEpic = new EpicTask(epics.get(id).getTitle(),
-                                    epics.get(id).getSpecification(),
-                                    epics.get(id).getStatus(),
-                                    arrayOfSubtaskId);
-                            epics.put(id, updateEpic);
-                        } else if (command == 2) {
-                            System.out.println("Введите Id подзадачи.");
-                            int idOfSubtask = scanner.nextInt();
-                            ArrayList<Integer> arrayOfSubtaskId = epics.get(id).getArrayOfSubtaskId();
-                            arrayOfSubtaskId.add(idOfSubtask);
-                            EpicTask updateEpic = new EpicTask(epics.get(id).getTitle(),
-                                    epics.get(id).getSpecification(),
-                                    epics.get(id).getStatus(),
-                                    arrayOfSubtaskId);
-                            epics.put(id, updateEpic);
-                        } else if (command == 0) {
-                            break;
-                        } else {
-                            System.out.println("Введите значение из предложенных выше.");
-                        }
-                    }
                 } else if (userInput == 0) {
                     break;
                 } else {
@@ -226,17 +209,18 @@ public class Manager {
             tasks.remove(id);
             System.out.println("Задача удалена.");
         } else if (subtasks.containsKey(id)) {
+            int epicId = subtasks.get(id).getEpicId();
+            ArrayList<Integer> arrayOfSubtaskId = epics.get(epicId).getArrayOfSubtaskId();
+            arrayOfSubtaskId.remove((Integer) id);
+            epics.get(epicId).setArrayOfSubtaskId(arrayOfSubtaskId);
             subtasks.remove(id);
-            ArrayList<Integer> arrayOfSubtaskId = epics.get(id).getArrayOfSubtaskId();
-            arrayOfSubtaskId.remove(id);
-            epics.get(id).setArrayOfSubtaskId(arrayOfSubtaskId);
             System.out.println("Подзадача удалена.");
         } else if (epics.containsKey(id)) {
-            epics.remove(id);
             ArrayList<Integer> arrayOfSubtaskId = epics.get(id).getArrayOfSubtaskId();
             for (Integer subtaskId : arrayOfSubtaskId) {
                 subtasks.remove(subtaskId);
             }
+            epics.remove(id);
             System.out.println("Эпик и его подзадачи удалены.");
         } else {
             System.out.println("Задачи нет в списках, проверьте id.");
@@ -260,60 +244,89 @@ public class Manager {
     protected void changeStatusOfTask() {
         System.out.println("Введите id задачи, статус которой вы хотите обновить.");
         int id = scanner.nextInt();
+
         if (tasks.containsKey(id)) {
             System.out.println("Введите новый статус задачи: 1 - IN_PROGRESS, 2 - DONE. ");
             int command = scanner.nextInt();
             if (command == 1) {
-                Task epicWithUpdateStatus = new Task(tasks.get(id).getTitle(),
+                Task taskWithUpdateStatus = new Task(tasks.get(id).getTitle(),
                         tasks.get(id).getSpecification(),
                         "IN_PROGRESS");
-                tasks.put(id, epicWithUpdateStatus);
+                tasks.put(id, taskWithUpdateStatus);
             } else if (command == 2) {
-                Task epicWithUpdateStatus = new Task(tasks.get(id).getTitle(),
+                Task taskWithUpdateStatus = new Task(tasks.get(id).getTitle(),
                         tasks.get(id).getSpecification(),
                         "DONE");
-                tasks.put(id, epicWithUpdateStatus);
+                tasks.put(id, taskWithUpdateStatus);
             } else {
                 System.out.println("Введите значение из предложенных выше.");
             }
-        } else if (epics.containsKey(id)) {
-            ArrayList<Integer> arrayOfSubtaskId = epics.get(id).getArrayOfSubtaskId();
-            for (Integer subtaskId : arrayOfSubtaskId) {
-                if (subtasks.get(subtaskId).getStatus().equals("NEW") || arrayOfSubtaskId.isEmpty()) {
-                    EpicTask epicWithUpdateStatus = new EpicTask(epics.get(id).getTitle(),
-                            epics.get(id).getSpecification(),
-                            "NEW",
-                            epics.get(id).getArrayOfSubtaskId());
-                    epics.put(id, epicWithUpdateStatus);
-                } else if (subtasks.get(subtaskId).getStatus().equals("DONE")) {
-                    EpicTask epicWithUpdateStatus = new EpicTask(epics.get(id).getTitle(),
-                            epics.get(id).getSpecification(),
-                            "DONE",
-                            epics.get(id).getArrayOfSubtaskId());
-                    epics.put(id, epicWithUpdateStatus);
-                } else {
-                    EpicTask epicWithUpdateStatus = new EpicTask(epics.get(id).getTitle(),
-                            epics.get(id).getSpecification(),
-                            "IN_PROGRESS",
-                            epics.get(id).getArrayOfSubtaskId());
-                    epics.put(id, epicWithUpdateStatus);
-                }
-            }
+
         } else if (subtasks.containsKey(id)) {
-            System.out.println("Введите новый статус задачи: 1 - IN_PROGRESS, 2 - DONE. ");
+            System.out.println("Выберите новый статус задачи: 1 - IN_PROGRESS, 2 - DONE. ");
             int command = scanner.nextInt();
             if (command == 1) {
+                //меняем статус сабтаска
                 SubTask subtaskWithUpdateStatus = new SubTask(subtasks.get(id).getTitle(),
                         subtasks.get(id).getSpecification(),
                         "IN_PROGRESS",
                         subtasks.get(id).getEpicId());
                 subtasks.put(id, subtaskWithUpdateStatus);
+                //проверяем (и меняем) статус эпика
+                int epicId = subtasks.get(id).getEpicId();
+                ArrayList<Integer> arrayOfSubtaskId = epics.get(epicId).getArrayOfSubtaskId();
+                for (Integer subtaskId : arrayOfSubtaskId) {
+                    if (subtasks.get(subtaskId).getStatus().equals("NEW") || arrayOfSubtaskId.isEmpty()) {
+                        EpicTask epicWithUpdateStatus = new EpicTask(epics.get(id).getTitle(),
+                                epics.get(id).getSpecification(),
+                                "NEW",
+                                epics.get(id).getArrayOfSubtaskId());
+                        epics.put(id, epicWithUpdateStatus);
+                    } else if (subtasks.get(subtaskId).getStatus().equals("DONE")) {
+                        EpicTask epicWithUpdateStatus = new EpicTask(epics.get(id).getTitle(),
+                                epics.get(id).getSpecification(),
+                                "DONE",
+                                epics.get(id).getArrayOfSubtaskId());
+                        epics.put(id, epicWithUpdateStatus);
+                    } else {
+                        EpicTask epicWithUpdateStatus = new EpicTask(epics.get(id).getTitle(),
+                                epics.get(id).getSpecification(),
+                                "IN_PROGRESS",
+                                epics.get(id).getArrayOfSubtaskId());
+                        epics.put(id, epicWithUpdateStatus);
+                    }
+                }
             } else if (command == 2) {
+                //меняем статус сабтаска
                 SubTask subtaskWithUpdateStatus = new SubTask(subtasks.get(id).getTitle(),
                         subtasks.get(id).getSpecification(),
                         "DONE",
                         subtasks.get(id).getEpicId());
                 subtasks.put(id, subtaskWithUpdateStatus);
+                //проверяем (и меняем) статус эпика
+                int epicId = subtasks.get(id).getEpicId();
+                ArrayList<Integer> arrayOfSubtaskId = epics.get(epicId).getArrayOfSubtaskId();
+                for (Integer subtaskId : arrayOfSubtaskId) {
+                    if (subtasks.get(subtaskId).getStatus().equals("NEW") || arrayOfSubtaskId.isEmpty()) {
+                        EpicTask epicWithUpdateStatus = new EpicTask(epics.get(id).getTitle(),
+                                epics.get(id).getSpecification(),
+                                "NEW",
+                                epics.get(id).getArrayOfSubtaskId());
+                        epics.put(id, epicWithUpdateStatus);
+                    } else if (subtasks.get(subtaskId).getStatus().equals("DONE")) {
+                        EpicTask epicWithUpdateStatus = new EpicTask(epics.get(id).getTitle(),
+                                epics.get(id).getSpecification(),
+                                "DONE",
+                                epics.get(id).getArrayOfSubtaskId());
+                        epics.put(id, epicWithUpdateStatus);
+                    } else {
+                        EpicTask epicWithUpdateStatus = new EpicTask(epics.get(id).getTitle(),
+                                epics.get(id).getSpecification(),
+                                "IN_PROGRESS",
+                                epics.get(id).getArrayOfSubtaskId());
+                        epics.put(id, epicWithUpdateStatus);
+                    }
+                }
             } else {
                 System.out.println("Введите значение из предложенных выше.");
             }
