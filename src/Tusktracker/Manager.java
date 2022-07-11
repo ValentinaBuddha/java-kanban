@@ -4,20 +4,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Manager {
+    private int counter = 0;
     private HashMap<Integer, Task> tasks = new HashMap<>();
     private HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private HashMap<Integer, Epic> epics = new HashMap<>();
 
     protected void createNewTask(Task newTask) {
-        tasks.put(newTask.id, newTask);
+        int taskId = ++counter;
+        newTask.setId(taskId);
+        tasks.put(taskId, newTask);
     }
 
     protected void createNewSubtask(Subtask newSubtask) {
-        subtasks.put(newSubtask.id, newSubtask);
+        int subtaskId = ++counter;
+        newSubtask.setId(subtaskId);
+        subtasks.put(subtaskId, newSubtask);
     }
 
     protected void createNewEpic(Epic newEpic) {
-        epics.put(newEpic.id, newEpic);
+        int epicId = ++counter;
+        newEpic.setId(epicId);
+        epics.put(epicId, newEpic);
     }
 
     protected void removeAllTasks() {

@@ -6,13 +6,11 @@ class Task {
     protected String title;
     protected String specification;
     protected int id;
-    protected static int lastId = 0;
     protected String status = "NEW";
 
     public Task(String title, String specification) {
         this.title = title;
         this.specification = specification;
-        this.id = ++lastId;
     }
 
     public Task(String title, String specification, String status) {
@@ -42,6 +40,10 @@ class Task {
 
     public String getStatus() {
         return status;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override
