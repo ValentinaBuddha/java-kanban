@@ -7,12 +7,24 @@ class Task {
     protected String specification;
     protected int id;
     protected static int lastId = 0;
-    protected String status;
+    protected String status = "NEW";
+
+    public Task(String title, String specification) {
+        this.title = title;
+        this.specification = specification;
+        this.id = ++lastId;
+    }
 
     public Task(String title, String specification, String status) {
         this.title = title;
         this.specification = specification;
-        this.id = ++lastId;
+        this.status = status;
+    }
+
+    public Task(String title, String specification, int id, String status) {
+        this.title = title;
+        this.specification = specification;
+        this.id = id;
         this.status = status;
     }
 
@@ -22,6 +34,10 @@ class Task {
 
     public String getSpecification() {
         return specification;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getStatus() {

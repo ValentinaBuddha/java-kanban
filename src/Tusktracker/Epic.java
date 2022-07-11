@@ -3,37 +3,42 @@ package Tusktracker;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class EpicTask extends Task {
-    private ArrayList<Integer> arrayOfSubtaskId;
+public class Epic extends Task {
 
-    public EpicTask(String title, String specification, String status, ArrayList<Integer> subtaskId) {
+    private ArrayList<Integer> subtaskIds = new ArrayList<>();
+
+    public Epic(String title, String specification) {
+        super(title, specification);
+    }
+
+    public Epic(String title, String specification, String status) {
         super(title, specification, status);
-        this.arrayOfSubtaskId = subtaskId;
     }
 
-    public ArrayList<Integer> getArrayOfSubtaskId() {
-        return arrayOfSubtaskId;
+    public Epic(String title, String specification, int id, String status, ArrayList<Integer> subtaskIds) {
+        super(title, specification, id, status);
+        this.subtaskIds = subtaskIds;
     }
 
-    public void setArrayOfSubtaskId(ArrayList<Integer> arrayOfSubtaskId) {
-        this.arrayOfSubtaskId = arrayOfSubtaskId;
+    public ArrayList<Integer> getSubtaskIds() {
+        return subtaskIds;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-        EpicTask otherEpic = (EpicTask) obj;
+        Epic otherEpic = (Epic) obj;
         return Objects.equals(title, otherEpic.title) &&
                 Objects.equals(specification, otherEpic.specification) &&
                 (id == otherEpic.id) &&
                 Objects.equals(status, otherEpic.status) &&
-                Objects.equals(arrayOfSubtaskId, otherEpic.arrayOfSubtaskId);
+                Objects.equals(subtaskIds, otherEpic.subtaskIds);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, specification, id, status, arrayOfSubtaskId);
+        return Objects.hash(title, specification, id, status, subtaskIds);
     }
 
     @Override
@@ -43,6 +48,6 @@ public class EpicTask extends Task {
                 ", описание='" + specification + '\'' +
                 ", id='" + id + '\'' +
                 ", статус='" + status + '\'' +
-                ", id подзадач(и)='" + arrayOfSubtaskId + '\'' + '}';
+                ", id подзадач(и)='" + subtaskIds + '\'' + '}';
     }
 }
