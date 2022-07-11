@@ -1,7 +1,5 @@
 package Tusktracker;
 
-import java.util.ArrayList;
-
 public class Main {
 
     public static void main(String[] args) {
@@ -27,43 +25,31 @@ public class Main {
         manager.createNewSubtask(subtask6);
         manager.createNewSubtask(subtask7);
 
-        //добавляем идентификаторы подзадач в списки эпиков
-        ArrayList<Integer> subtaskIdsForEpic3 = epic3.getSubtaskIds();
-        subtaskIdsForEpic3.add(subtask5.getId());
-        subtaskIdsForEpic3.add(subtask6.getId());
-        ArrayList<Integer> subtaskIdsForEpic4 = epic4.getSubtaskIds();
-        subtaskIdsForEpic4.add(subtask7.getId());
-
-        //смотрим списки всех задач всех типов
-        manager.getListOfTasks();
-        manager.getListOfEpics();
-        manager.getListOfSubtasks();
-
-        //смотрим задачу/эпик/подзадачу по идентификатору
         manager.getTaskById(task1.getId());
         manager.getEpicById(epic4.getId());
         manager.getSubtaskById(subtask7.getId());
 
-        //смотрим по идентификатору эпика список его подзадач
-        System.out.println(manager.getListOfSubtasksByOneEpic(epic3.getId()));
+        manager.getListOfSubtasksByOneEpic(epic3.getId());
 
         //обновляем задачу(название и статус)
         Task updateTask3 = new Task("Task", "123", task1.getId(), "IN_PROGRESS");
-        manager.updateTheTask(updateTask3, task1.getId());
+        manager.updateTheTask(updateTask3);
         //обновляем эпик(название)
         Epic updateEpic3 = new Epic("Epic", "123", epic3.getId(), epic3.getStatus(), epic3.getSubtaskIds());
-        manager.updateTheEpic(updateEpic3, epic3.getId());
+        manager.updateTheEpic(updateEpic3);
         //обновляем подзадачу(статус)
         Subtask updateSubtask5 = new Subtask("Подзадача",
                 "123", subtask5.getId(),"IN_PROGRESS", 3);
-        manager.updateTheSubtask(updateSubtask5, subtask5.getId());
+        manager.updateTheSubtask(updateSubtask5);
 
-        //удаление задачи/эпика/подзадачи по идентификатору
+        manager.getListOfTasks();
+        manager.getListOfEpics();
+        manager.getListOfSubtasks();
+
         manager.removeTaskById(task1.getId());
         manager.removeEpicById(epic4.getId());
-        manager.removeTSubtaskById(subtask6.getId());
+        manager.removeSubtaskById(subtask6.getId());
 
-        //удаляем все задачи
         manager.removeAllTasks();
         manager.removeAllSubtasks();
         manager.removeAllEpics();
