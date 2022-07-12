@@ -41,6 +41,9 @@ public class Main {
         Subtask updateSubtask5 = new Subtask("Подзадача",
                 "123", subtask5.getId(),"IN_PROGRESS", 3);
         manager.updateTheSubtask(updateSubtask5);
+        Subtask updateSubtask7 = new Subtask("Подзадача",
+                "123", subtask7.getId(),"DONE", 4);
+        manager.updateTheSubtask(updateSubtask7);
 
         manager.getListOfTasks();
         manager.getListOfEpics();

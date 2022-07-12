@@ -20,6 +20,8 @@ public class Epic extends Task {
         return subtaskIds;
     }
 
+
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -44,6 +46,6 @@ public class Epic extends Task {
                 ", описание='" + specification + '\'' +
                 ", id='" + id + '\'' +
                 ", статус='" + status + '\'' +
-                ", id подзадач(и)='" + subtaskIds + '\'' + '}';
+                ", id подзадач(и)='" + subtaskIds + '}' + '\'';
     }
 }

@@ -46,6 +46,10 @@ class Task {
         this.id = id;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -68,6 +72,6 @@ class Task {
                 "название='" + title + '\'' +
                 ", описание='" + specification + '\'' +
                 ", id='" + id + '\'' +
-                ", статус='" + status + '\'' + '}';
+                ", статус='" + status + '}' + '\'';
     }
 }

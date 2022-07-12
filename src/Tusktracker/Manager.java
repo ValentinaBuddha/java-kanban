@@ -36,11 +36,9 @@ public class Manager {
     }
 
     public void removeAllSubtasks() {
-        for (Subtask subtask : subtasks.values()) {
-            int epicId = subtask.getEpicId();
-            ArrayList<Integer> subtaskIds = epics.get(epicId).getSubtaskIds();
-            subtaskIds.remove((Integer) subtask.getId());
-            checkEpicStatus(epicId);
+        for (Epic epic : epics.values()) {
+            epic.getSubtaskIds().clear();
+            checkEpicStatus(epic.getId());
         }
         subtasks.clear();
     }
@@ -124,30 +122,27 @@ public class Manager {
     }
 
     private void checkEpicStatus(int epicId) {
+        int counterNEW = 0;
+        int counterDONE = 0;
         ArrayList<Integer> subtaskIds = epics.get(epicId).getSubtaskIds();
         for (Integer subtaskId : subtaskIds) {
-            if (subtasks.get(subtaskId).getStatus().equals("NEW") || subtaskIds.isEmpty()) {
-                Epic epicWithUpdateStatus = new Epic(epics.get(epicId).getTitle(),
-                        epics.get(epicId).getSpecification(),
-                        epics.get(epicId).getId(),
-                        "NEW",
-                        epics.get(epicId).getSubtaskIds());
-                epics.put(epicId, epicWithUpdateStatus);
+            if (subtasks.get(subtaskId).getStatus().equals("NEW")) {
+                counterNEW++;
             } else if (subtasks.get(subtaskId).getStatus().equals("DONE")) {
-                Epic epicWithUpdateStatus = new Epic(epics.get(epicId).getTitle(),
-                        epics.get(epicId).getSpecification(),
-                        epics.get(epicId).getId(),
-                        "DONE",
-                        epics.get(epicId).getSubtaskIds());
-                epics.put(epicId, epicWithUpdateStatus);
-            } else {
-                Epic epicWithUpdateStatus = new Epic(epics.get(epicId).getTitle(),
-                        epics.get(epicId).getSpecification(),
-                        epics.get(epicId).getId(),
-                        "IN_PROGRESS",
-                        epics.get(epicId).getSubtaskIds());
-                epics.put(epicId, epicWithUpdateStatus);
+                counterDONE++;
             }
         }
+        if (subtaskIds.size() == counterNEW || subtaskIds.isEmpty()) {
+            epics.get(epicId).setStatus("NEW");
+        } else if (subtaskIds.size() == counterDONE) {
+            epics.get(epicId).setStatus("DONE");
+        } else {
+            epics.get(epicId).setStatus("IN_PROGRESS");
+        }
+    }
+    void print() {
+        System.out.println(tasks);
+        System.out.println(epics);
+        System.out.println(subtasks);
     }
 }

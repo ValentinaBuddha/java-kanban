@@ -43,6 +43,6 @@ public class Subtask extends Task {
                 ", описание='" + specification + '\'' +
                 ", id='" + id + '\'' +
                 ", статус='" + status + '\'' +
-                ", id эпика='" + epicId + '\'' + '}';
+                ", id эпика='" + epicId + '}' + '\'';
     }
 }
