@@ -6,20 +6,20 @@ class Task {
     protected String title;
     protected String specification;
     protected int id;
-    protected String status = "NEW";
+    protected TaskStatus status = TaskStatus.NEW;
 
     public Task(String title, String specification) {
         this.title = title;
         this.specification = specification;
     }
 
-    public Task(String title, String specification, String status) {
+    public Task(String title, String specification, TaskStatus status) {
         this.title = title;
         this.specification = specification;
         this.status = status;
     }
 
-    public Task(String title, String specification, int id, String status) {
+    public Task(String title, String specification, int id, TaskStatus status) {
         this.title = title;
         this.specification = specification;
         this.id = id;
@@ -38,7 +38,7 @@ class Task {
         return id;
     }
 
-    public String getStatus() {
+    public TaskStatus getStatus() {
         return status;
     }
 
@@ -46,7 +46,7 @@ class Task {
         this.id = id;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TaskStatus status) {
         this.status = status;
     }
 

@@ -3,58 +3,60 @@ package Tusktracker;
 public class Main {
 
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
 
         //создаем задачи
         Task task1 = new Task("Задача", "123");
         Task task2 = new Task("Задача", "123");
-        manager.createNewTask(task1);
-        manager.createNewTask(task2);
+        inMemoryTaskManager.createNewTask(task1);
+        inMemoryTaskManager.createNewTask(task2);
 
         //создаем эпики
         Epic epic3 = new Epic("Эпик", "123");
         Epic epic4 = new Epic("Эпик", "123");
-        manager.createNewEpic(epic3);
-        manager.createNewEpic(epic4);
+        inMemoryTaskManager.createNewEpic(epic3);
+        inMemoryTaskManager.createNewEpic(epic4);
 
         //создаем подзадачи
         Subtask subtask5 = new Subtask("Подзадача", "123", 3);
         Subtask subtask6 = new Subtask("Подзадача", "123", 3);
         Subtask subtask7 = new Subtask("Подзадача", "123", 4);
-        manager.createNewSubtask(subtask5);
-        manager.createNewSubtask(subtask6);
-        manager.createNewSubtask(subtask7);
+        inMemoryTaskManager.createNewSubtask(subtask5);
+        inMemoryTaskManager.createNewSubtask(subtask6);
+        inMemoryTaskManager.createNewSubtask(subtask7);
 
-        manager.getTaskById(task1.getId());
-        manager.getEpicById(epic4.getId());
-        manager.getSubtaskById(subtask7.getId());
+        inMemoryTaskManager.getTaskById(task1.getId());
+        inMemoryTaskManager.getEpicById(epic4.getId());
+        inMemoryTaskManager.getSubtaskById(subtask7.getId());
 
-        manager.getListOfSubtasksByOneEpic(epic3.getId());
+        System.out.println(inMemoryTaskManager.getHistory());
+        
+        inMemoryTaskManager.getListOfSubtasksByOneEpic(epic3.getId());
 
         //обновляем задачу(название и статус)
-        Task updateTask3 = new Task("Task", "123", task1.getId(), "IN_PROGRESS");
-        manager.updateTheTask(updateTask3);
+        Task updateTask3 = new Task("Task", "123", task1.getId(), TaskStatus.IN_PROGRESS);
+        inMemoryTaskManager.updateTheTask(updateTask3);
         //обновляем эпик(название)
         Epic updateEpic3 = new Epic("Epic", "123", epic3.getId(), epic3.getStatus(), epic3.getSubtaskIds());
-        manager.updateTheEpic(updateEpic3);
+        inMemoryTaskManager.updateTheEpic(updateEpic3);
         //обновляем подзадачу(статус)
         Subtask updateSubtask5 = new Subtask("Подзадача",
-                "123", subtask5.getId(),"IN_PROGRESS", 3);
-        manager.updateTheSubtask(updateSubtask5);
+                "123", subtask5.getId(), TaskStatus.IN_PROGRESS, 3);
+        inMemoryTaskManager.updateTheSubtask(updateSubtask5);
         Subtask updateSubtask7 = new Subtask("Подзадача",
-                "123", subtask7.getId(),"DONE", 4);
-        manager.updateTheSubtask(updateSubtask7);
+                "123", subtask7.getId(), TaskStatus.DONE, 4);
+        inMemoryTaskManager.updateTheSubtask(updateSubtask7);
 
-        manager.getListOfTasks();
-        manager.getListOfEpics();
-        manager.getListOfSubtasks();
+        inMemoryTaskManager.getListOfTasks();
+        inMemoryTaskManager.getListOfEpics();
+        inMemoryTaskManager.getListOfSubtasks();
 
-        manager.removeTaskById(task1.getId());
-        manager.removeEpicById(epic4.getId());
-        manager.removeSubtaskById(subtask6.getId());
+        inMemoryTaskManager.removeTaskById(task1.getId());
+        inMemoryTaskManager.removeEpicById(epic4.getId());
+        inMemoryTaskManager.removeSubtaskById(subtask6.getId());
 
-        manager.removeAllTasks();
-        manager.removeAllSubtasks();
-        manager.removeAllEpics();
+        inMemoryTaskManager.removeAllTasks();
+        inMemoryTaskManager.removeAllSubtasks();
+        inMemoryTaskManager.removeAllEpics();
     }
 }
