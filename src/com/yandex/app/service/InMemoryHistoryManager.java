@@ -1,4 +1,6 @@
-package Tusktracker;
+package com.yandex.app.service;
+
+import com.yandex.app.model.Task;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
-package Tusktracker;
+package com.yandex.app.model;
 
 import java.util.Objects;
 
-class Task {
+public class Task {
     protected String title;
     protected String specification;
     protected int id;

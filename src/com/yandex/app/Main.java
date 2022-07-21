@@ -1,4 +1,10 @@
-package Tusktracker;
+package com.yandex.app;
+
+import com.yandex.app.service.InMemoryTaskManager;
+import com.yandex.app.model.Epic;
+import com.yandex.app.model.Subtask;
+import com.yandex.app.model.Task;
+import com.yandex.app.model.TaskStatus;
 
 public class Main {
 
@@ -30,7 +36,7 @@ public class Main {
         inMemoryTaskManager.getSubtaskById(subtask7.getId());
 
         System.out.println(inMemoryTaskManager.getHistory());
-        
+
         inMemoryTaskManager.getListOfSubtasksByOneEpic(epic3.getId());
 
         //обновляем задачу(название и статус)

@@ -1,4 +1,4 @@
-package Tusktracker;
+package com.yandex.app.model;
 
 public enum TaskStatus {
     NEW,

@@ -1,4 +1,4 @@
-package Tusktracker;
+package com.yandex.app.service;
 
 public class Managers {
 

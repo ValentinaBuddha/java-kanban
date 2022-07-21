@@ -1,4 +1,4 @@
-package Tusktracker;
+package com.yandex.app.model;
 
 import java.util.Objects;
 
