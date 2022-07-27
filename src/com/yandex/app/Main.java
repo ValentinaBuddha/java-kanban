@@ -1,15 +1,16 @@
 package com.yandex.app;
 
-import com.yandex.app.service.InMemoryTaskManager;
 import com.yandex.app.model.Epic;
 import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
 import com.yandex.app.model.TaskStatus;
+import com.yandex.app.service.Managers;
+import com.yandex.app.service.TaskManager;
 
 public class Main {
 
     public static void main(String[] args) {
-        InMemoryTaskManager inMemoryTaskManager = new InMemoryTaskManager();
+        TaskManager inMemoryTaskManager = Managers.getDefault();
 
         //создаем задачи
         Task task1 = new Task("Задача", "123");
