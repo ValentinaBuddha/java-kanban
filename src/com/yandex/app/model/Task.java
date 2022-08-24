@@ -13,25 +13,11 @@ public class Task {
         this.specification = specification;
     }
 
-    public Task(String title, String specification, TaskStatus status) {
-        this.title = title;
-        this.specification = specification;
-        this.status = status;
-    }
-
     public Task(String title, String specification, int id, TaskStatus status) {
         this.title = title;
         this.specification = specification;
         this.id = id;
         this.status = status;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getSpecification() {
-        return specification;
     }
 
     public int getId() {

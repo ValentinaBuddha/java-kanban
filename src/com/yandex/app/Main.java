@@ -3,7 +3,6 @@ package com.yandex.app;
 import com.yandex.app.model.Epic;
 import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
-import com.yandex.app.model.TaskStatus;
 import com.yandex.app.service.Managers;
 import com.yandex.app.service.TaskManager;
 
@@ -27,16 +26,37 @@ public class Main {
         //создаем подзадачи
         Subtask subtask5 = new Subtask("Подзадача", "123", 3);
         Subtask subtask6 = new Subtask("Подзадача", "123", 3);
-        Subtask subtask7 = new Subtask("Подзадача", "123", 4);
+        Subtask subtask7 = new Subtask("Подзадача", "123", 3);
         inMemoryTaskManager.createNewSubtask(subtask5);
         inMemoryTaskManager.createNewSubtask(subtask6);
         inMemoryTaskManager.createNewSubtask(subtask7);
 
+        inMemoryTaskManager.getTaskById(task2.getId());
         inMemoryTaskManager.getTaskById(task1.getId());
         inMemoryTaskManager.getEpicById(epic4.getId());
+        inMemoryTaskManager.getEpicById(epic3.getId());
         inMemoryTaskManager.getSubtaskById(subtask7.getId());
+        inMemoryTaskManager.getEpicById(epic4.getId());
+        inMemoryTaskManager.getEpicById(epic3.getId());
+        inMemoryTaskManager.getSubtaskById(subtask7.getId());
+        inMemoryTaskManager.getTaskById(task1.getId());
+        inMemoryTaskManager.getTaskById(task2.getId());
+        inMemoryTaskManager.getSubtaskById(subtask5.getId());
+        inMemoryTaskManager.getSubtaskById(subtask6.getId());
+        inMemoryTaskManager.getSubtaskById(subtask6.getId());
+        inMemoryTaskManager.getSubtaskById(subtask5.getId());
 
-        System.out.println(inMemoryTaskManager.getHistory());
+        System.out.println(inMemoryTaskManager.getHistory());//4371265
+
+        inMemoryTaskManager.removeTaskById(task1.getId());
+
+        System.out.println(inMemoryTaskManager.getHistory());//437265
+
+        inMemoryTaskManager.removeEpicById(epic3.getId());
+
+        System.out.println(inMemoryTaskManager.getHistory());//42
+
+        /*
 
         inMemoryTaskManager.getListOfSubtasksByOneEpic(epic3.getId());
 
@@ -53,17 +73,6 @@ public class Main {
         Subtask updateSubtask7 = new Subtask("Подзадача",
                 "123", subtask7.getId(), TaskStatus.DONE, 4);
         inMemoryTaskManager.updateTheSubtask(updateSubtask7);
-
-        inMemoryTaskManager.getListOfTasks();
-        inMemoryTaskManager.getListOfEpics();
-        inMemoryTaskManager.getListOfSubtasks();
-
-        inMemoryTaskManager.removeTaskById(task1.getId());
-        inMemoryTaskManager.removeEpicById(epic4.getId());
-        inMemoryTaskManager.removeSubtaskById(subtask6.getId());
-
-        inMemoryTaskManager.removeAllTasks();
-        inMemoryTaskManager.removeAllSubtasks();
-        inMemoryTaskManager.removeAllEpics();
+*/
     }
 }

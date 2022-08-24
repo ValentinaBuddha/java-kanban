@@ -1,26 +1,25 @@
 package com.yandex.app.model;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Epic extends Task {
 
-    private ArrayList<Integer> subtaskIds = new ArrayList<>();
+    private List<Integer> subtaskIds = new ArrayList<>();
 
     public Epic(String title, String specification) {
         super(title, specification);
     }
 
-    public Epic(String title, String specification, int id, TaskStatus status, ArrayList<Integer> subtaskIds) {
+    public Epic(String title, String specification, int id, TaskStatus status, List<Integer> subtaskIds) {
         super(title, specification, id, status);
         this.subtaskIds = subtaskIds;
     }
 
-    public ArrayList<Integer> getSubtaskIds() {
+    public List<Integer> getSubtaskIds() {
         return subtaskIds;
     }
-
-
 
     @Override
     public boolean equals(Object obj) {
