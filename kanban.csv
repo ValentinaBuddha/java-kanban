@@ -1,10 +1,6 @@
 id,type,name,status,description,epic
-1,TASK,NEW,description1
-2,TASK,NEW,description2
-3,EPIC,NEW,description3
-4,EPIC,NEW,description4
-5,SUBTASK,NEW,description5,3
-6,SUBTASK,NEW,description6,3
-7,SUBTASK,NEW,description7,3
-8,SUBTASK,NEW,description8,4
+1,TASK,Задача,NEW,description1
+2,EPIC,Эпик,NEW,description2
+3,SUBTASK,Подзадача,NEW,description3,2
 
+1,2,3
