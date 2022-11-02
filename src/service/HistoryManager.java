@@ -1,6 +1,6 @@
-package com.yandex.app.service;
+package service;
 
-import com.yandex.app.model.Task;
+import model.Task;
 
 import java.util.List;
 

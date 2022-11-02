@@ -1,9 +1,9 @@
-package com.yandex.app.service;
+package service;
 
-import com.yandex.app.model.Epic;
-import com.yandex.app.model.Subtask;
-import com.yandex.app.model.Task;
-import com.yandex.app.model.TaskStatus;
+import model.Epic;
+import model.Subtask;
+import model.Task;
+import model.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,20 +12,20 @@ import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private int generatorId = 0;
-    private final Map<Integer, Task> tasks = new HashMap<>();
-    private final Map<Integer, Subtask> subtasks = new HashMap<>();
-    private final Map<Integer, Epic> epics = new HashMap<>();
+    protected final Map<Integer, Task> tasks = new HashMap<>();
+    protected final Map<Integer, Epic> epics = new HashMap<>();
+    protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     private final HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
 
     @Override
-    public void createNewTask(Task newTask) {
+    public void addTask(Task newTask) {
         int taskId = ++generatorId;
         newTask.setId(taskId);
         tasks.put(taskId, newTask);
     }
 
     @Override
-    public void createNewSubtask(Subtask newSubtask) {
+    public void addSubtask(Subtask newSubtask) {
         int newSubtaskId = ++generatorId;
         newSubtask.setId(newSubtaskId);
         subtasks.put(newSubtaskId, newSubtask);
@@ -36,7 +36,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void createNewEpic(Epic newEpic) {
+    public void addEpic(Epic newEpic) {
         int epicId = ++generatorId;
         newEpic.setId(epicId);
         epics.put(epicId, newEpic);
@@ -155,17 +155,17 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTheTask(Task updateTask) {
+    public void updateTask(Task updateTask) {
         tasks.put(updateTask.getId(), updateTask);
     }
 
     @Override
-    public void updateTheEpic(Epic updateEpic) {
+    public void updateEpic(Epic updateEpic) {
         epics.put(updateEpic.getId(), updateEpic);
     }
 
     @Override
-    public void updateTheSubtask(Subtask updateSubtask) {
+    public void updateSubtask(Subtask updateSubtask) {
         subtasks.put(updateSubtask.getId(), updateSubtask);
         int epicId = subtasks.get(updateSubtask.getId()).getEpicId();
         checkEpicStatus(epicId);

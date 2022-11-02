@@ -1,18 +1,18 @@
-package com.yandex.app.service;
+package service;
 
-import com.yandex.app.model.Epic;
-import com.yandex.app.model.Subtask;
-import com.yandex.app.model.Task;
+import model.Epic;
+import model.Subtask;
+import model.Task;
 
 import java.util.List;
 
 public interface TaskManager {
 
-    void createNewTask(Task newTask);
+    void addTask(Task newTask);
 
-    void createNewSubtask(Subtask newSubtask);
+    void addSubtask(Subtask newSubtask);
 
-    void createNewEpic(Epic newEpic);
+    void addEpic(Epic newEpic);
 
     void removeAllTasks();
 
@@ -40,11 +40,11 @@ public interface TaskManager {
 
     void removeSubtaskById(int subtaskIdForRemove);
 
-    void updateTheTask(Task updateTask);
+    void updateTask(Task updateTask);
 
-    void updateTheEpic(Epic updateEpic);
+    void updateEpic(Epic updateEpic);
 
-    void updateTheSubtask(Subtask updateSubtask);
+    void updateSubtask(Subtask updateSubtask);
 
     void checkEpicStatus(int epicId);
 

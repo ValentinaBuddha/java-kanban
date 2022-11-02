@@ -1,24 +1,26 @@
-package com.yandex.app.model;
+package model;
 
 import java.util.Objects;
 
 public class Task {
     protected String title;
-    protected String specification;
+    protected String description;
     protected int id;
     protected TaskStatus status = TaskStatus.NEW;
 
-    public Task(String title, String specification) {
+    public Task(String title, String description) {
         this.title = title;
-        this.specification = specification;
+        this.description = description;
     }
 
-    public Task(String title, String specification, int id, TaskStatus status) {
+    public Task(String title, String description, int id, TaskStatus status) {
         this.title = title;
-        this.specification = specification;
+        this.description = description;
         this.id = id;
         this.status = status;
     }
+
+
 
     public int getId() {
         return id;
@@ -26,6 +28,10 @@ public class Task {
 
     public TaskStatus getStatus() {
         return status;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setId(int id) {
@@ -36,27 +42,31 @@ public class Task {
         this.status = status;
     }
 
+    public TaskType getTaskType() {
+        return TaskType.TASK;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
         Task otherTask = (Task) obj;
         return Objects.equals(title, otherTask.title) &&
-                Objects.equals(specification, otherTask.specification) &&
+                Objects.equals(description, otherTask.description) &&
                 (id == otherTask.id) &&
                 Objects.equals(status, otherTask.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, specification, id, status);
+        return Objects.hash(title, description, id, status);
     }
 
     @Override
     public String toString() {
         return "Задача{" +
                 "название='" + title + '\'' +
-                ", описание='" + specification + '\'' +
+                ", описание='" + description + '\'' +
                 ", id='" + id + '\'' +
                 ", статус='" + status + '}' + '\'';
     }

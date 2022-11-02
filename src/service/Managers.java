@@ -1,4 +1,6 @@
-package com.yandex.app.service;
+package service;
+
+import java.nio.file.Paths;
 
 public class Managers {
 
@@ -12,4 +14,8 @@ public class Managers {
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
     }
+
+//    public static TaskManager getDefaultFile() {
+//        return new FileBackedTasksManager(Paths.get("./kanban.csv"));
+//    }
 }
