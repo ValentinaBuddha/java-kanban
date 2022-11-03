@@ -1,6 +1,6 @@
 package service;
 
-import java.nio.file.Paths;
+import java.io.File;
 
 public class Managers {
 
@@ -16,6 +16,6 @@ public class Managers {
     }
 
     public static TaskManager getDefaultFile() {
-        return new FileBackedTasksManager();
+        return new FileBackedTasksManager(new File("./resources/kanban.csv"));
     }
 }

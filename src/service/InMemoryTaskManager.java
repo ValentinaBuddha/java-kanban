@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private int generatorId = 0;
+    protected int generatorId = 0;
     protected final Map<Integer, Task> tasks = new HashMap<>();
     protected final Map<Integer, Epic> epics = new HashMap<>();
     protected final Map<Integer, Subtask> subtasks = new HashMap<>();
-    private final HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
+    protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
     @Override
     public void addTask(Task newTask) {
@@ -45,7 +45,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeAllTasks() {
         for (Integer id : tasks.keySet()) {
-            inMemoryHistoryManager.remove(id);
+            historyManager.remove(id);
         }
         tasks.clear();
     }
@@ -57,7 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
             checkEpicStatus(epic.getId());
         }
         for (Integer id : subtasks.keySet()) {
-            inMemoryHistoryManager.remove(id);
+            historyManager.remove(id);
         }
         subtasks.clear();
     }
@@ -69,11 +69,11 @@ public class InMemoryTaskManager implements TaskManager {
             List<Integer> subtaskIds = epics.get(epicId).getSubtaskIds();
             for (Integer subtaskId : subtaskIds) {
                 subtasks.remove(subtaskId);
-                inMemoryHistoryManager.remove(subtaskId);
+                historyManager.remove(subtaskId);
             }
         }
         for (Integer id : epics.keySet()) {
-            inMemoryHistoryManager.remove(id);
+            historyManager.remove(id);
         }
         epics.clear();
     }
@@ -96,7 +96,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getTaskById(int id) {
         if (tasks.get(id) != null) {
-            inMemoryHistoryManager.add(tasks.get(id));
+            historyManager.add(tasks.get(id));
         }
         return tasks.get(id);
     }
@@ -104,7 +104,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Epic getEpicById(int id) {
         if (epics.get(id) != null) {
-            inMemoryHistoryManager.add(epics.get(id));
+            historyManager.add(epics.get(id));
         }
         return epics.get(id);
     }
@@ -112,7 +112,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Subtask getSubtaskById(int id) {
         if (subtasks.get(id) != null) {
-            inMemoryHistoryManager.add(subtasks.get(id));
+            historyManager.add(subtasks.get(id));
         }
         return subtasks.get(id);
     }
@@ -130,7 +130,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeTaskById(int id) {
         tasks.remove(id);
-        inMemoryHistoryManager.remove(id);
+        historyManager.remove(id);
     }
 
     @Override
@@ -138,10 +138,10 @@ public class InMemoryTaskManager implements TaskManager {
         List<Integer> subtaskIds = epics.get(epicId).getSubtaskIds();
         for (Integer subtaskId : subtaskIds) {
             subtasks.remove(subtaskId);
-            inMemoryHistoryManager.remove(subtaskId);
+            historyManager.remove(subtaskId);
         }
         epics.remove(epicId);
-        inMemoryHistoryManager.remove(epicId);
+        historyManager.remove(epicId);
     }
 
     @Override
@@ -151,7 +151,7 @@ public class InMemoryTaskManager implements TaskManager {
         subtaskIds.remove((Integer) subtaskIdForRemove);
         subtasks.remove(subtaskIdForRemove);
         checkEpicStatus(epicId);
-        inMemoryHistoryManager.remove(subtaskIdForRemove);
+        historyManager.remove(subtaskIdForRemove);
     }
 
     @Override
@@ -194,6 +194,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return inMemoryHistoryManager.getHistory();
+        return historyManager.getHistory();
     }
 }
