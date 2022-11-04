@@ -3,4 +3,3 @@ id,type,name,status,description,epic
 2,EPIC,Эпик,NEW,description2
 3,SUBTASK,Подзадача,NEW,description3,2
 
-1,2,3

@@ -56,7 +56,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.FILE = FILE;
     }
 
-    //метод который будет восстанавливать данные менеджера из файла при запуске программы
+    //метод который будет восстанавливать данные менеджера из файла при запуске программы+
     private static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
         Map<Integer, Task> fileHistory = new HashMap<>();
