@@ -89,10 +89,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                         fileManager.checkEpicStatus(epicId);
                         break;
                 }
+                fileManager.generatorId++;
             }
                 //после того, как задачи прочитаны, заполняем ими историю
                 for (Integer id : idsHistory) {
-                    fileManager.historyManager.getHistory().add(fileHistory.get(id));
+                    fileManager.historyManager.add(fileHistory.get(id));
                 }
         } catch (IOException e) {
             e.printStackTrace();
