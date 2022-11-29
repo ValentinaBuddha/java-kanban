@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class HistoryManagerTest {
 
-    HistoryManager historyManager;
+    private HistoryManager historyManager;
     private Task task;
     private Epic epic;
     private Subtask subtask;

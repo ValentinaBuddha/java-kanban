@@ -17,7 +17,7 @@ abstract class TaskManagerTest<T extends InMemoryTaskManager> {
     protected Subtask subtask3;
     protected Subtask subtask4;
 
-    void initTasks() {
+    protected void initTasks() {
         task1 = new Task("Задача", "description1", DATE, 1000);
         taskManager.addTask(task1);
         epic2 = new Epic("Эпик", "description3");
