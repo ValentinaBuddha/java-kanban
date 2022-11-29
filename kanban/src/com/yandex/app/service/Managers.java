@@ -1,4 +1,4 @@
-package service;
+package com.yandex.app.service;
 
 import java.io.File;
 

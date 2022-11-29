@@ -1,7 +1,7 @@
-package service;
+package com.yandex.app.service;
 
-import exceptions.ManagerSaveException;
-import model.*;
+import com.yandex.app.model.*;
+import com.yandex.app.exceptions.ManagerSaveException;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -13,42 +13,6 @@ import java.util.stream.Collectors;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    public static void main(String[] args) {
-        TaskManager fileBackedTasksManager = Managers.getDefaultFile();
-
-        Task task1 = new Task("Задача", "description1");
-        fileBackedTasksManager.addTask(task1);
-        Epic epic2 = new Epic("Эпик", "description2");
-        fileBackedTasksManager.addEpic(epic2);
-        Subtask subtask3 = new Subtask("Подзадача", "description3", 2);
-        fileBackedTasksManager.addSubtask(subtask3);
-
-        fileBackedTasksManager.getTaskById(task1.getId());
-        fileBackedTasksManager.getEpicById(epic2.getId());
-        fileBackedTasksManager.getSubtaskById(subtask3.getId());
-
-//получился файл со следующим содержимым
-//id,type,name,status,description,epic
-//1,TASK,Задача,NEW,description1
-//2,EPIC,Эпик,NEW,description2
-//3,SUBTASK,Подзадача,NEW,description3,3
-//
-//1,2,3
-
-        FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile(
-                new File("./resources/kanban.csv"));
-        for (Map.Entry<Integer, Task> entry : fileManager.tasks.entrySet()) {
-            System.out.println(entry.getKey() + " : " + entry.getValue());
-        }
-        for (Map.Entry<Integer, Epic> entry : fileManager.epics.entrySet()) {
-            System.out.println(entry.getKey() + " : " + entry.getValue());
-        }
-        for (Map.Entry<Integer, Subtask> entry : fileManager.subtasks.entrySet()) {
-            System.out.println(entry.getKey() + " : " + entry.getValue());
-        }
-        System.out.println(fileManager.getHistory());
-    }
-
     private final File FILE;
     private static final String FIRST_LINE = "id,type,name,status,description,epic";
 
@@ -56,7 +20,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.FILE = FILE;
     }
 
-    //метод который будет восстанавливать данные менеджера из файла при запуске программы+
+    //метод который будет восстанавливать данные менеджера из файла при запуске программы
     private static FileBackedTasksManager loadFromFile(File file) {
         FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
         Map<Integer, Task> fileHistory = new HashMap<>();
@@ -103,7 +67,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return fileManager;
     }
 
-    //для восстановления менеджера истории из CSV.+
+    //для восстановления менеджера истории из CSV
     private static List<Integer> historyFromString(String value) {
         List<Integer> idsHistory = new ArrayList<>();
         String[] line = value.split(",");
@@ -113,7 +77,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return idsHistory;
     }
 
-    //метод создания задачи из строки+
+    //метод создания задачи из строки
     private static Task fromString(String[] line) {
         int id = Integer.parseInt(line[0]);
         TaskType taskType = TaskType.valueOf(line[1]);
@@ -132,7 +96,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return null;
     }
 
-    //после каждой операции сохраняет все задачи и историю в файл+
+    //после каждой операции сохраняет все задачи и историю в файл
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE, StandardCharsets.UTF_8))) {
             writer.write(FIRST_LINE);
@@ -149,7 +113,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    //метод записи всех текущих задач в файл+
+    //метод записи всех текущих задач в файл
     private void addTasksToFile(BufferedWriter writer) throws IOException {
         for (Task task : getListOfTasks()) {
             writer.write(toString(task));
@@ -165,13 +129,13 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    //создает строку для таски и эпика+
+    //создает строку для таски и эпика
     private String toString(Task task) {
         return task.getId() + "," + task.getTaskType() + "," + task.getTitle() + "," + task.getStatus() + "," +
                 task.getDescription();
     }
 
-    //создает строку для сабтаски+
+    //создает строку для сабтаски
     private String toString(Subtask subtask) {
         return subtask.getId() + "," + subtask.getTaskType() + "," + subtask.getTitle() + "," + subtask.getStatus() +
                 "," + subtask.getDescription() + "," + subtask.getEpicId();
@@ -275,5 +239,48 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         super.checkEpicStatus(epicId);
         save();
     }
+
+    @Override
+    public void setEpicDateTime(int epicId) {
+        super.setEpicDateTime(epicId);
+        save();
+    }
 }
+
+
+//    public static void main(String[] args) {
+//        TaskManager fileBackedTasksManager = Managers.getDefaultFile();
+//
+//        Task task1 = new Task("Задача", "description1");
+//        fileBackedTasksManager.addTask(task1);
+//        Epic epic2 = new Epic("Эпик", "description2");
+//        fileBackedTasksManager.addEpic(epic2);
+//        Subtask subtask3 = new Subtask("Подзадача", "description3", 2);
+//        fileBackedTasksManager.addSubtask(subtask3);
+//
+//        fileBackedTasksManager.getTaskById(task1.getId());
+//        fileBackedTasksManager.getEpicById(epic2.getId());
+//        fileBackedTasksManager.getSubtaskById(subtask3.getId());
+//
+////получился файл со следующим содержимым
+////id,type,name,status,description,epic
+////1,TASK,Задача,NEW,description1
+////2,EPIC,Эпик,NEW,description2
+////3,SUBTASK,Подзадача,NEW,description3,3
+////
+////1,2,3
+//
+//        FileBackedTasksManager fileManager = FileBackedTasksManager.loadFromFile(
+//                new File("./resources/kanban.csv"));
+//        for (Map.Entry<Integer, Task> entry : fileManager.tasks.entrySet()) {
+//            System.out.println(entry.getKey() + " : " + entry.getValue());
+//        }
+//        for (Map.Entry<Integer, Epic> entry : fileManager.epics.entrySet()) {
+//            System.out.println(entry.getKey() + " : " + entry.getValue());
+//        }
+//        for (Map.Entry<Integer, Subtask> entry : fileManager.subtasks.entrySet()) {
+//            System.out.println(entry.getKey() + " : " + entry.getValue());
+//        }
+//        System.out.println(fileManager.getHistory());
+//    }
 

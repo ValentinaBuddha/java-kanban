@@ -1,4 +1,4 @@
-package exceptions;
+package com.yandex.app.exceptions;
 
 public class ManagerSaveException extends RuntimeException {
 
