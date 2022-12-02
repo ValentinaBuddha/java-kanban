@@ -1,5 +1,6 @@
 package com.yandex.app.service;
 
+import com.yandex.app.exceptions.CollisionTaskException;
 import com.yandex.app.model.*;
 import org.junit.jupiter.api.Test;
 
@@ -7,8 +8,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-abstract class TaskManagerTest<T extends InMemoryTaskManager> {
+abstract class TaskManagerTest<T extends TaskManager> {
     protected T taskManager;
     protected final LocalDateTime DATE = LocalDateTime.of(2023, 1, 1, 0, 0);
     protected final int EPIC_ID = 2;
@@ -30,31 +32,35 @@ abstract class TaskManagerTest<T extends InMemoryTaskManager> {
 
     @Test
     void addTask() {
-        int expectedId = 1;
-        Task expectedTask = taskManager.getTaskById(expectedId);
+        Task expectedTask = taskManager.getTaskById(1);
         assertNotNull(expectedTask, "Задача не найдена.");
         assertNotNull(taskManager.getListOfTasks(), "Задачи на возвращаются.");
         assertEquals(1, taskManager.getListOfTasks().size(), "Неверное количество задач.");
-        assertEquals(expectedId, expectedTask.getId(), "Идентификаторы задач не совпадают");
+        assertEquals(1, expectedTask.getId(), "Идентификаторы задач не совпадают");
+        Task taskPriority = taskManager.getPrioritizedTasks().stream()
+                .filter(task -> task.getId() == 1)
+                .findFirst()
+                .orElse(null);
+        assertNotNull(taskPriority, "Задача не добавлена в список приоритизации");
+        assertEquals(taskPriority, expectedTask, "В список приоритизации добавлена неверная задача");
     }
 
     @Test
     void addEpic() {
-        int expectedId = 2;
-        Epic expectedEpic = taskManager.getEpicById(expectedId);
+        Epic expectedEpic = taskManager.getEpicById(2);
         assertNotNull(expectedEpic, "Задача не найдена.");
         assertNotNull(taskManager.getListOfEpics(), "Задачи на возвращаются.");
         assertEquals(1, taskManager.getListOfEpics().size(), "Неверное количество задач.");
         assertNotNull(expectedEpic.getSubtaskIds(), "Список подзадач не создан.");
         assertEquals(TaskStatus.NEW, expectedEpic.getStatus(), "Статус не NEW");
-        assertEquals(expectedId, expectedEpic.getId(), "Идентификаторы задач не совпадают");
+        assertEquals(2, expectedEpic.getId(), "Идентификаторы задач не совпадают");
     }
 
     @Test
     void addSubtask() {
-        int expectedId = 3;
         Epic expectedEpicOfSubtask = taskManager.getEpicById(EPIC_ID);
-        Subtask expectedSubtask = taskManager.getSubtaskById(expectedId);
+        assertNotNull(expectedEpicOfSubtask.getStartTime(), "Время эпика не null");
+        Subtask expectedSubtask = taskManager.getSubtaskById(3);
         assertNotNull(expectedSubtask, "Задача не найдена.");
         assertNotNull(taskManager.getListOfSubtasks(), "Задачи на возвращаются.");
         assertEquals(2, taskManager.getListOfSubtasks().size(), "Неверное количество задач.");
@@ -62,8 +68,15 @@ abstract class TaskManagerTest<T extends InMemoryTaskManager> {
         assertNotNull(taskManager.getListOfSubtasksByOneEpic(EPIC_ID), "Список подзадач не обновился");
         assertEquals(DATE.plusDays(1), expectedEpicOfSubtask.getStartTime(), "Время эпика не обновилось");
         assertEquals(TaskStatus.NEW, expectedEpicOfSubtask.getStatus(), "Статус не NEW");
-        assertEquals(expectedId, expectedSubtask.getId(), "Идентификаторы задач не совпадают");
+        assertEquals(3, expectedSubtask.getId(), "Идентификаторы задач не совпадают");
         assertEquals(expectedEpicOfSubtask, epic2, "Эпик подзадачи неверный");
+        Task subtaskPriority = taskManager.getPrioritizedTasks().stream()
+                .filter(task -> task.getId() == 3)
+                .findFirst()
+                .orElse(null);
+        assertNotNull(subtaskPriority, "Задача не добавлена в список приоритизации");
+        assertEquals(subtaskPriority, expectedSubtask, "В список приоритизации добавлена неверная задача");
+        assertNotNull(expectedEpicOfSubtask.getStartTime(), "Время эпика не изменилось");
     }
 
     @Test
@@ -123,6 +136,11 @@ abstract class TaskManagerTest<T extends InMemoryTaskManager> {
         assertEquals(1, taskManager.getListOfTasks().size(), "Неверное количество задач.");
         taskManager.removeTaskById(1);
         assertNull(taskManager.getTaskById(1), "Задача не удалена");
+        Task taskPriority = taskManager.getPrioritizedTasks().stream()
+                .filter(task -> task.getId() == 1)
+                .findFirst()
+                .orElse(null);
+        assertNull(taskPriority, "Задача не удалена из списка приоритизации");
     }
 
     @Test
@@ -131,6 +149,12 @@ abstract class TaskManagerTest<T extends InMemoryTaskManager> {
         assertEquals(2, taskManager.getListOfSubtasks().size(), "Неверное количество задач.");
         taskManager.removeSubtaskById(3);
         assertNull(taskManager.getSubtaskById(3), "Подзадача не удалена");
+        Task subtaskPriority = taskManager.getPrioritizedTasks().stream()
+                .filter(task -> task.getId() == 3)
+                .findFirst()
+                .orElse(null);
+        assertNull(subtaskPriority, "Задача не удалена из списка приоритизации");
+        assertEquals(DATE.plusDays(2), taskManager.getEpicById(EPIC_ID).getStartTime(), "Время эпика не изменилось");
     }
 
     @Test
@@ -138,5 +162,19 @@ abstract class TaskManagerTest<T extends InMemoryTaskManager> {
         assertNotNull(taskManager.getListOfEpics(), "Список эпиков не заполнен");
         taskManager.removeEpicById(2);
         assertNull(taskManager.getEpicById(2), "Эпик не удален");
+    }
+
+    @Test
+    void validate() {
+        Task task1 = new Task("Задача1", "description1", DATE, 1000);
+        Task task2 = new Task("Задача2", "description2", DATE, 1000);
+
+        CollisionTaskException exception = assertThrows(CollisionTaskException.class,
+                () -> {
+                    taskManager.addTask(task1);
+                    taskManager.addTask(task2);
+                });
+        assertEquals("Время выполнения задачи пересекается со временем уже существующей " +
+                "задачи. Выберите другую дату.", exception.getMessage());
     }
 }

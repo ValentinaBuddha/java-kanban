@@ -52,7 +52,7 @@ public class Subtask extends Task {
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, description, id, status, epicId, duration, startTime);
+        return Objects.hash(title, description, id, status, startTime, duration, epicId);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class Subtask extends Task {
                 ", описание='" + description + '\'' +
                 ", id='" + id + '\'' +
                 ", статус='" + status + '\'' +
-                ", дата начала='" + startTime.format(formatter) + '\'' +
+                ", дата начала='" + getStartTimeString() + '\'' +
                 ", продолжительность='" + duration + '\'' +
                 ", id эпика='" + epicId + '}' + '\'';
     }

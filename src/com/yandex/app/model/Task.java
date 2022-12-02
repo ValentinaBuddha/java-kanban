@@ -12,6 +12,8 @@ public class Task {
     protected LocalDateTime startTime;
     protected long duration;
 
+    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+
     public Task(String title, String description, LocalDateTime startTime, long duration) {
         this.title = title;
         this.description = description;
@@ -73,6 +75,13 @@ public class Task {
         return startTime;
     }
 
+    public String getStartTimeString() {
+        if (startTime == null) {
+            return "null";
+        }
+        return startTime.format(formatter);
+    }
+
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
@@ -86,10 +95,18 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return startTime.plusMinutes(duration);
+        if (startTime != null) {
+            return startTime.plusMinutes(duration);
+        }
+        return null;
     }
 
-    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+    public String getEndTimeString() {
+        if (startTime != null) {
+            return getEndTime().format(formatter);
+        }
+        return null;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -106,7 +123,7 @@ public class Task {
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, description, id, status, duration, startTime);
+        return Objects.hash(title, description, id, status, startTime, duration);
     }
 
     @Override
@@ -116,7 +133,7 @@ public class Task {
                 ", описание='" + description + '\'' +
                 ", id='" + id + '\'' +
                 ", статус='" + status + '\'' +
-                ", дата начала='" + startTime.format(formatter) + '\'' +
+                ", дата начала='" + getStartTimeString() + '\'' +
                 ", продолжительность='" + duration + '}' + '\'';
     }
 }
