@@ -44,21 +44,13 @@ public class Epic extends Task {
     }
 
     @Override
-    public String getStartTimeString() {
-        if (startTime == null) {
-            return "null";
-        }
-        return startTime.format(formatter);
-    }
-
-    @Override
     public LocalDateTime getEndTime() {
         return endTime;
     }
 
     @Override
     public String getEndTimeString() {
-        if (startTime == null) {
+        if (endTime == null) {
             return "null";
         }
         return getEndTime().format(formatter);

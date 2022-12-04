@@ -16,10 +16,11 @@ public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Subtask> subtasks = new HashMap<>();
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
 
-    Comparator<Task> comparator = Comparator.comparing(Task::getStartTime, Comparator.nullsLast(Comparator.naturalOrder()))
+    final static Comparator<Task> COMPARATOR = Comparator.comparing(Task::getStartTime,
+                    Comparator.nullsLast(Comparator.naturalOrder()))
             .thenComparing(Task::getId);
 
-    protected Set<Task> prioritizedTasks = new TreeSet<>(comparator);
+    protected Set<Task> prioritizedTasks = new TreeSet<>(COMPARATOR);
 
     @Override
     public void addTask(Task newTask) {
@@ -235,19 +236,24 @@ public class InMemoryTaskManager implements TaskManager {
             epics.get(epicId).setEndTime(null);
             return;
         }
-        LocalDateTime epicStartTime = LocalDateTime.MAX;
-        LocalDateTime epicEndTime = LocalDateTime.MIN;
+        LocalDateTime epicStartTime = null;
+        LocalDateTime epicEndTime = null;
         long epicDuration = 0L;
         for (Integer subtaskId : subtaskIds) {
-            if (!(subtasks.get(subtaskId).getStartTime() == null) || !(subtasks.get(subtaskId).getEndTime() == null)) {
-                if (subtasks.get(subtaskId).getStartTime().isBefore(epicStartTime)) {
-                    epicStartTime = subtasks.get(subtaskId).getStartTime();
+            Subtask subtask = subtasks.get(subtaskId);
+            LocalDateTime subtaskStartTime = subtask.getStartTime();
+            LocalDateTime subtaskEndTime = subtask.getEndTime();
+            if (subtaskStartTime != null) {
+                if (epicStartTime == null || subtaskStartTime.isBefore(epicStartTime)) {
+                    epicStartTime = subtaskStartTime;
                 }
-                if (subtasks.get(subtaskId).getEndTime().isAfter(epicEndTime)) {
-                    epicEndTime = subtasks.get(subtaskId).getEndTime();
-                }
-                epicDuration += subtasks.get(subtaskId).getDuration();
             }
+            if (subtaskEndTime != null) {
+                if (epicEndTime == null || subtaskEndTime.isAfter(epicEndTime)) {
+                    epicEndTime = subtaskEndTime;
+                }
+            }
+            epicDuration += subtasks.get(subtaskId).getDuration();
         }
         epics.get(epicId).setStartTime(epicStartTime);
         epics.get(epicId).setEndTime(epicEndTime);
@@ -269,15 +275,12 @@ public class InMemoryTaskManager implements TaskManager {
             if (newTask.getId() == existTask.getId()) {
                 continue;
             }
-            boolean valid1 = (!newTask.getEndTime().isAfter(existTask.getStartTime()));
-            boolean valid2 = (!newTask.getStartTime().isBefore(existTask.getEndTime()));
-            if (valid1 && valid2) {
+            if ((!newTask.getEndTime().isAfter(existTask.getStartTime())) ||
+                    (!newTask.getStartTime().isBefore(existTask.getEndTime()))) {
                 continue;
             }
-            if (!valid1 && !valid2){
-                throw new CollisionTaskException("Время выполнения задачи пересекается со временем уже существующей " +
-                        "задачи. Выберите другую дату.");
-            }
+            throw new CollisionTaskException("Время выполнения задачи пересекается со временем уже существующей " +
+                    "задачи. Выберите другую дату.");
         }
     }
 }

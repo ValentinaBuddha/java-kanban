@@ -17,6 +17,11 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTasksMa
     void setUp() {
         file = new File("./resources/test.csv");
         super.taskManager = new FileBackedTasksManager(file);
+        initTasks();
+        taskManager.getTaskById(1);
+        taskManager.getEpicById(2);
+        taskManager.getSubtaskById(3);
+        taskManager.getSubtaskById(4);
     }
 
     @Test
@@ -33,27 +38,20 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTasksMa
                 "Количество подзадач после выгрузки не совпададает");
         assertEquals(taskManager.getListOfTasks(), fileManager.getListOfTasks(),
                 "Список подзадач после выгрузки не совпададает");
-        taskManager.getTaskById(1);
-        taskManager.getEpicById(2);
-        taskManager.getSubtaskById(3);
-        taskManager.getSubtaskById(4);
         List<Task> history = taskManager.getHistory();
         List<Task> historyFromFile = fileManager.getHistory();
         assertEquals(4, historyFromFile.size(), "Список истории сформирован неверно");
         assertEquals(history, historyFromFile, "Список истории после выгрузки не совпададает");
         assertEquals(taskManager.getPrioritizedTasks(), fileManager.getPrioritizedTasks(),
                 "Отсортированный список после выгрузки не совпададает");
-//        Так же хорошо было бы сравнить значение поля,
-//         которое хранит идентификатор последней добавленной задачи в InMemoryTaskManager
+        assertEquals(4, taskManager.generatorId,
+                "Идентификатор последней добавленной задачи после выгрузки не совпададает");
     }
 
-    @Test
-    void save() {
-
+    @AfterEach
+    void tearDown() {
+        if ((file.exists())) {
+            assertTrue(file.delete());
+        }
     }
-
-//    @AfterEach
-//    void tearDown() {
-//        assertTrue(file.delete());
-//    }
 }
