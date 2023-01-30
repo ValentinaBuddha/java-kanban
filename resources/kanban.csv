@@ -1,5 +1,2 @@
 id,type,name,status,description,startTime,endTime,duration,epic
-1,TASK,Задача,NEW,description1,null,null,1000
-2,EPIC,Эпик,NEW,description2,02.01.23 00:00,02.01.23 16:40,1000
-3,SUBTASK,Подзадача,NEW,description3,02.01.23 00:00,02.01.23 16:40,1000,2
 

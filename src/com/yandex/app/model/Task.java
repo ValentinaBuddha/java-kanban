@@ -12,8 +12,6 @@ public class Task {
     protected LocalDateTime startTime;
     protected long duration;
 
-    public static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
-
     public Task(String title, String description, LocalDateTime startTime, long duration) {
         this.title = title;
         this.description = description;
@@ -79,7 +77,7 @@ public class Task {
         if (startTime == null) {
             return "null";
         }
-        return startTime.format(formatter);
+        return startTime.format(LocalDateAdapter.formatter);
     }
 
     public void setStartTime(LocalDateTime startTime) {
@@ -103,7 +101,7 @@ public class Task {
 
     public String getEndTimeString() {
         if (startTime != null) {
-            return getEndTime().format(formatter);
+            return getEndTime().format(LocalDateAdapter.formatter);
         }
         return null;
     }

@@ -14,16 +14,15 @@ import java.util.stream.Collectors;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
 
-    private final File FILE;
+    private final File FILE = new File("./resources/kanban.csv");
     private static final String FIRST_LINE = "id,type,name,status,description,startTime,endTime,duration,epic";
 
-    public FileBackedTasksManager(File FILE) {
-        this.FILE = FILE;
+    public FileBackedTasksManager() {
     }
 
     //метод который будет восстанавливать данные менеджера из файла при запуске программы
     protected static FileBackedTasksManager loadFromFile(File file) {
-        FileBackedTasksManager fileManager = new FileBackedTasksManager(file);
+        FileBackedTasksManager fileManager = new FileBackedTasksManager();
         Map<Integer, Task> fileHistory = new HashMap<>();
         List<Integer> idsHistory = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
@@ -90,8 +89,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         LocalDateTime startTime;
         LocalDateTime endTime;
         if (!line[5].equals("null")) {
-            startTime = LocalDateTime.parse(line[5], Task.formatter);
-            endTime = LocalDateTime.parse(line[6], Task.formatter);
+            startTime = LocalDateTime.parse(line[5], LocalDateAdapter.formatter);
+            endTime = LocalDateTime.parse(line[6], LocalDateAdapter.formatter);
         } else {
             startTime = null;
             endTime = null;

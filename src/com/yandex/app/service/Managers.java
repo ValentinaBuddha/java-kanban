@@ -1,6 +1,6 @@
 package com.yandex.app.service;
 
-import java.io.File;
+import com.yandex.app.http.HttpTaskManager;
 
 public class Managers {
 
@@ -8,14 +8,10 @@ public class Managers {
     }
 
     public static TaskManager getDefault(){
-        return new InMemoryTaskManager();
+        return new HttpTaskManager();
     }
 
     public static HistoryManager getDefaultHistory() {
         return new InMemoryHistoryManager();
-    }
-
-    public static TaskManager getDefaultFile() {
-        return new FileBackedTasksManager(new File("./resources/kanban.csv"));
     }
 }

@@ -16,7 +16,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTasksMa
     @BeforeEach
     void setUp() {
         file = new File("./resources/test.csv");
-        super.taskManager = new FileBackedTasksManager(file);
+        super.taskManager = new FileBackedTasksManager();
         initTasks();
         taskManager.getTaskById(1);
         taskManager.getEpicById(2);

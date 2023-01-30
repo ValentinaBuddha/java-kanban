@@ -53,7 +53,7 @@ public class Epic extends Task {
         if (endTime == null) {
             return "null";
         }
-        return getEndTime().format(formatter);
+        return getEndTime().format(LocalDateAdapter.formatter);
     }
 
     public void setEndTime(LocalDateTime endTime) {
