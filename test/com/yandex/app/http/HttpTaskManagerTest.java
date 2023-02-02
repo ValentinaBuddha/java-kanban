@@ -18,7 +18,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
         try {
             server = new KVServer();
             server.start();
-            super.taskManager = new HttpTaskManager(false);
+            super.taskManager = new HttpTaskManager();
             initTasks();
             taskManager.getTaskById(1);
             taskManager.getEpicById(2);
@@ -57,5 +57,8 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
                 "Id после выгрузки не совпадает");
         assertEquals(4, httpTaskManager.getListOfSubtasks().get(1).getId(),
                 "Id после выгрузки не совпадает");
+
+        assertEquals(4, taskManager.generatorId,
+                "Идентификатор последней добавленной задачи после выгрузки не совпадает");
     }
 }

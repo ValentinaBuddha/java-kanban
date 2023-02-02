@@ -23,13 +23,16 @@ public class HttpTaskManager extends FileBackedTasksManager {
             .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
             .create();
 
-    private boolean toLoad = false;
-
     public HttpTaskManager(boolean toLoad) {
         if (toLoad) {
             load();
         }
     }
+
+    public HttpTaskManager() {
+        this(false);
+    }
+
 
     @Override
     public void save() {
@@ -80,13 +83,11 @@ public class HttpTaskManager extends FileBackedTasksManager {
         for (JsonElement jsonId : historyArray) {
             int id = jsonId.getAsInt();
             if (tasks.containsKey(id)) {
-                getTaskById(id);
-            }
-            if (epics.containsKey(id)) {
-                getEpicById(id);
-            }
-            if (subtasks.containsKey(id)) {
-                getSubtaskById(id);
+                historyManager.add(tasks.get(id));
+            } else if (epics.containsKey(id)) {
+                historyManager.add(epics.get(id));
+            } else if (subtasks.containsKey(id)) {
+                historyManager.add(subtasks.get(id));
             }
         }
     }
