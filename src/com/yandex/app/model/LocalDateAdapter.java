@@ -13,11 +13,19 @@ import java.time.format.DateTimeFormatter;
 
         @Override
         public void write(final JsonWriter jsonWriter, final LocalDateTime localDatetime) throws IOException {
-            jsonWriter.value(localDatetime.format(formatter));
+            if (localDatetime == null) {
+                jsonWriter.nullValue();
+            } else {
+                jsonWriter.value(localDatetime.format(formatter));
+            }
         }
 
         @Override
         public LocalDateTime read(final JsonReader jsonReader) throws IOException {
-            return LocalDateTime.parse(jsonReader.nextString(), formatter);
+            String nullOrNot = jsonReader.nextString();
+            if (nullOrNot.equals("null")) {
+                return null;
+            }
+            return LocalDateTime.parse(nullOrNot, formatter);
         }
     }

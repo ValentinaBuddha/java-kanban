@@ -1,61 +1,84 @@
 package com.yandex.app;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import com.yandex.app.http.HttpTaskManager;
+import com.yandex.app.http.HttpTaskServer;
 import com.yandex.app.model.Epic;
+import com.yandex.app.model.LocalDateAdapter;
 import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
 
 import com.yandex.app.http.KVServer;
-import com.yandex.app.service.Managers;
-import com.yandex.app.service.TaskManager;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         KVServer kvServer = new KVServer();
         kvServer.start();
-        TaskManager taskManager = Managers.getDefault();
+
+        HttpTaskManager taskManager = new HttpTaskManager(false);
+
+        HttpTaskServer server = new HttpTaskServer(taskManager);
+        server.start();
 
         Task task1 = new Task("Задача", "description1",
                 LocalDateTime.of(2023, 1, 1, 0, 0), 1000);
-        Task task2 = new Task("Задача", "description2",
+        Epic epic2 = new Epic("Эпик", "description2");
+        Subtask subtask3 = new Subtask("Подзадача", "description3", 2,
                 LocalDateTime.of(2023, 1, 2, 0, 0), 1000);
-        Epic epic3 = new Epic("Эпик", "description3");
-        Epic epic4 = new Epic("Эпик", "description4");
-        Subtask subtask5 = new Subtask("Подзадача", "description5", 3,
+        Subtask subtask4 = new Subtask("Подзадача", "description4", 2,
                 LocalDateTime.of(2023, 1, 3, 0, 0), 1000);
-        Subtask subtask6 = new Subtask("Подзадача", "description6", 3,
-                LocalDateTime.of(2023, 1, 4, 0, 0), 1000);
-        Subtask subtask7 = new Subtask("Подзадача", "description7", 4,
-                LocalDateTime.of(2023, 1, 5, 0, 0), 1000);
 
         taskManager.addTask(task1);
-        taskManager.addTask(task2);
-        taskManager.addEpic(epic3);
-        taskManager.addEpic(epic4);
-        taskManager.addSubtask(subtask5);
-        taskManager.addSubtask(subtask6);
-        taskManager.addSubtask(subtask7);
+        taskManager.addEpic(epic2);
+        taskManager.addSubtask(subtask3);
+        taskManager.addSubtask(subtask4);
 
-        taskManager.getEpicById(4);
-        taskManager.getTaskById(2);
-        taskManager.getSubtaskById(6);
+        taskManager.getEpicById(2);
+        taskManager.getTaskById(1);
+        taskManager.getSubtaskById(4);
 
+//        HttpTaskManager httpTaskManager = new HttpTaskManager(true);
+//
+//        System.out.println(httpTaskManager.getListOfTasks());
+//        System.out.println(httpTaskManager.getListOfEpics());
+//        System.out.println(httpTaskManager.getListOfSubtasks());
+//        System.out.println(httpTaskManager.getHistory());
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
+                .create();
+        HttpClient client = HttpClient.newHttpClient();
+
+        //получить все задачи
+        URI url = URI.create("http://localhost:8080/tasks/task/");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        Type taskType = new TypeToken<List<Task>>() {
+        }.getType();
+        List<Task> tasksList = gson.fromJson(response.body(), taskType);
+        System.out.println(response.statusCode());
+        System.out.println(response.body());
         System.out.println(taskManager.getListOfTasks());
-        System.out.println(taskManager.getListOfEpics());
-        System.out.println(taskManager.getListOfSubtasks());
-
-        taskManager.removeAllTasks();
-        taskManager.removeAllEpics();
-        taskManager.removeAllSubtasks();
-
-        System.out.println(taskManager.getListOfTasks());
-        System.out.println(taskManager.getListOfEpics());
-        System.out.println(taskManager.getListOfSubtasks());
+        System.out.println(tasksList);
 
         kvServer.stop();
+        server.stop();
+
     }
 }
 
@@ -90,26 +113,7 @@ public class Main {
 //                    "Проверьте, пожалуйста, адрес и повторите попытку.");
 //        }
 
-//        //получить все задачи
-//        URI url = URI.create("http://localhost:8080/tasks/task/");
-//        HttpRequest request = HttpRequest.newBuilder()
-//                .uri(url)
-//                .header("Accept", "application/json")
-//                .GET()
-//                .build();
-//        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-//        try {
-//            if (response.statusCode() == 200) {
-//                JsonElement jsonElement = JsonParser.parseString(response.body());
-//                List<Task> tasksArray = gson.fromJson(jsonElement, new TypeToken<Collection<Task>>() {}.getType());
-//                System.out.println(tasksArray);
-//            } else {
-//                System.out.println("Что-то пошло не так. Сервер вернул код состояния: " + response.statusCode());
-//            }
-//        } catch (NullPointerException e) {
-//            System.out.println("Во время выполнения запроса возникла ошибка.\n" +
-//                    "Проверьте, пожалуйста, адрес и повторите попытку.");
-//        }
+//
 
 //        //создать задачу
 //        URI url = URI.create("http://localhost:8080/tasks/task/");

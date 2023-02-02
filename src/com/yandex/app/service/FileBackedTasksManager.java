@@ -109,7 +109,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     //после каждой операции сохраняет все задачи и историю в файл
-    private void save() {
+    protected void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE, StandardCharsets.UTF_8))) {
             writer.write(FIRST_LINE);
             writer.newLine();

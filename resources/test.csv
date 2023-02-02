@@ -4,3 +4,4 @@ id,type,name,status,description,startTime,endTime,duration,epic
 3,SUBTASK,Подзадача,NEW,description3,02.01.23 00:00,02.01.23 16:40,1000,2
 4,SUBTASK,Подзадача,NEW,description4,03.01.23 00:00,03.01.23 16:40,1000,2
 
+1,2,3,4

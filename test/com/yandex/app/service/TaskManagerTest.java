@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-abstract class TaskManagerTest<T extends TaskManager> {
+public abstract class TaskManagerTest<T extends TaskManager> {
     protected T taskManager;
     protected final LocalDateTime DATE = LocalDateTime.of(2023, 1, 1, 0, 0);
     protected final int EPIC_ID = 2;
@@ -22,7 +22,7 @@ abstract class TaskManagerTest<T extends TaskManager> {
     protected void initTasks() {
         task1 = new Task("Задача", "description1", DATE, 1000);
         taskManager.addTask(task1);
-        epic2 = new Epic("Эпик", "description3");
+        epic2 = new Epic("Эпик", "description2");
         taskManager.addEpic(epic2);
         subtask3 = new Subtask("Подзадача", "description3", EPIC_ID, DATE.plusDays(1), 1000);
         taskManager.addSubtask(subtask3);

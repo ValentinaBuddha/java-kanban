@@ -8,7 +8,7 @@ public class Managers {
     }
 
     public static TaskManager getDefault(){
-        return new HttpTaskManager();
+        return new HttpTaskManager(false);
     }
 
     public static HistoryManager getDefaultHistory() {

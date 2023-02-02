@@ -26,12 +26,13 @@ public class HttpTaskServer {
     private static final int PORT = 8080;
 
     private final HttpServer httpServer;
-    private final TaskManager taskManager = Managers.getDefault();
+    private final TaskManager taskManager;
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(LocalDateTime.class, new LocalDateAdapter())
-            .create();;
+            .create();
 
-    public HttpTaskServer() throws IOException {
+    public HttpTaskServer(TaskManager taskManager) throws IOException {
+        this.taskManager = taskManager;
         httpServer = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
         httpServer.createContext("/tasks", new TasksHandler());
     }
@@ -56,47 +57,56 @@ public class HttpTaskServer {
 
             Endpoint endpoint = getEndpoint(exchange.getRequestURI().getPath(), exchange.getRequestMethod(), query);
 
-            InputStream inputStream = exchange.getRequestBody();
-            String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-
             switch (endpoint) {
                 case POST_TASK:
+                    if (readText(exchange).isEmpty()) {
+                        writeResponse(exchange, "Необходимо заполнить все поля задачи", 400);
+                        return;
+                    }
                     try {
-                        Task task = gson.fromJson(body, Task.class);
-                        if (taskManager.getListOfTasks().stream().anyMatch(t -> t.getId() == task.getId())) {
-                            taskManager.updateTask(task);
-                            writeResponse(exchange, "Задача обновлена", 201);
-                        } else {
+                        Task task = gson.fromJson(readText(exchange), Task.class);
+                        if (task.getId() == null) {
                             taskManager.addTask(task);
                             writeResponse(exchange, "Задача добавлена", 201);
+                        } else {
+                            taskManager.updateTask(task);
+                            writeResponse(exchange, "Задача обновлена", 201);
                         }
                     } catch (JsonSyntaxException e) {
                         writeResponse(exchange, "Получен некорректный JSON", 400);
                     }
                     break;
                 case POST_EPIC:
+                    if (readText(exchange).isEmpty()) {
+                        writeResponse(exchange, "Необходимо заполнить все поля задачи", 400);
+                        return;
+                    }
                     try {
-                        Epic epic = gson.fromJson(body, Epic.class);
-                        if (taskManager.getListOfEpics().stream().anyMatch(e -> e.getId() == epic.getId())) {
-                            taskManager.updateEpic(epic);
-                            writeResponse(exchange, "Эпик обновлен", 201);
-                        } else {
+                        Epic epic = gson.fromJson(readText(exchange), Epic.class);
+                        if (epic.getId() == null) {
                             taskManager.addEpic(epic);
                             writeResponse(exchange, "Эпик добавлен", 201);
+                        } else {
+                            taskManager.updateEpic(epic);
+                            writeResponse(exchange, "Эпик обновлен", 201);
                         }
                     } catch (JsonSyntaxException e) {
                         writeResponse(exchange, "Получен некорректный JSON", 400);
                     }
                     break;
                 case POST_SUBTASK:
+                    if (readText(exchange).isEmpty()) {
+                        writeResponse(exchange, "Необходимо заполнить все поля задачи", 400);
+                        return;
+                    }
                     try {
-                        Subtask subtask = gson.fromJson(body, Subtask.class);
-                        if (taskManager.getListOfSubtasks().stream().anyMatch(s -> s.getId() == subtask.getId())) {
-                            taskManager.updateSubtask(subtask);
-                            writeResponse(exchange, "Подзадача обновлена", 201);
-                        } else {
+                        Subtask subtask = gson.fromJson(readText(exchange), Subtask.class);
+                        if (subtask.getId() == null) {
                             taskManager.addSubtask(subtask);
                             writeResponse(exchange, "Подзадача добавлена", 201);
+                        } else {
+                            taskManager.updateSubtask(subtask);
+                            writeResponse(exchange, "Подзадача обновлена", 201);
                         }
                     } catch (JsonSyntaxException e) {
                         writeResponse(exchange, "Получен некорректный JSON", 400);
@@ -323,6 +333,10 @@ public class HttpTaskServer {
             DELETE_TASKS, DELETE_SUBTASKS, DELETE_EPICS, GET_TASKS, GET_EPICS, GET_SUBTASKS, GET_TASK, GET_EPIC,
             GET_SUBTASK, GET_SUBTASKS_EPIC, DELETE_TASK, DELETE_EPIC, DELETE_SUBTASK, POST_TASK, POST_SUBTASK,
             POST_EPIC, GET_HISTORY, GET_PRIORITY, UNKNOWN
+        }
+
+        private String readText(HttpExchange h) throws IOException {
+            return new String(h.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.yandex.app.http;
 
+import com.yandex.app.exceptions.StatusCodeException;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -10,25 +12,23 @@ public class KVTaskClient {
 
     private final String url = "http://localhost:8078";
     private String apiToken;
-    HttpClient client = HttpClient.newHttpClient();
+    private HttpClient client = HttpClient.newHttpClient();
 
     public KVTaskClient() {
-        register(url);
+        register();
     }
 
     public void put(String key, String json) {
-        if (apiToken == null) {
-            System.out.println("API_TOKEN не присвоен");
-            return;
-        }
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url + "/save" + key + "?API_TOKEN=" + apiToken))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.statusCode());
+            HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
+            if (response.statusCode() != 200) {
+                throw new StatusCodeException("Ошибка получения запроса. Код ошибки: " + response.statusCode());
+            }
         } catch (IOException | InterruptedException e) {
             System.out.println("Во время выполнения запроса возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
@@ -36,9 +36,6 @@ public class KVTaskClient {
     }
 
     public String load(String key) {
-        if (apiToken == null) {
-            return "API_TOKEN не присвоен";
-        }
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url + "/load" + key + "?API_TOKEN=" + apiToken))
                 .header("Content-Type", "application/json")
@@ -46,15 +43,18 @@ public class KVTaskClient {
                 .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                throw new StatusCodeException("Ошибка получения запроса. Код ошибки: " + response.statusCode());
+            }
             return response.body();
         } catch (IOException | InterruptedException e) {
             System.out.println("Во время выполнения запроса возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
-        return "Ошибка получения запроса";
+        return null;
     }
 
-    private void register(String url) {
+    private void register() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(url + "/register"))
@@ -65,7 +65,7 @@ public class KVTaskClient {
             if (response.statusCode() == 200) {
                 apiToken = response.body();
             } else {
-                throw new RuntimeException("Не удалось получить API_TOKEN. Код ошибки: " + response.statusCode());
+                throw new StatusCodeException("Ошибка получения запроса. Код ошибки: " + response.statusCode());
             }
         } catch (IOException | InterruptedException e) {
             System.out.println("Во время выполнения запроса /register возникла ошибка.\n" +
