@@ -7,7 +7,7 @@ import java.util.Objects;
 public class Task {
     protected String title;
     protected String description;
-    protected int id;
+    protected Integer id;
     protected TaskStatus status = TaskStatus.NEW;
     protected LocalDateTime startTime;
     protected long duration;
@@ -41,7 +41,7 @@ public class Task {
         this.duration = duration;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

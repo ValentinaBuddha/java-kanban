@@ -271,7 +271,7 @@ public class InMemoryTaskManager implements TaskManager {
             if (newTask.getStartTime() == null || existTask.getStartTime() == null) {
                 return;
             }
-            if (newTask.getId() == existTask.getId()) {
+            if (Objects.equals(newTask.getId(), existTask.getId())) {
                 continue;
             }
             if ((!newTask.getEndTime().isAfter(existTask.getStartTime())) ||

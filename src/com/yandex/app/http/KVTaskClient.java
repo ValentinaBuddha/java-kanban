@@ -32,7 +32,7 @@ public class KVTaskClient {
         } catch (StatusCodeException e) {
             e.printStackTrace();
         } catch (IOException | InterruptedException e) {
-            System.out.println("Во время выполнения запроса возникла ошибка.\n" +
+            throw new StatusCodeException("Во время выполнения запроса возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
     }
@@ -49,13 +49,10 @@ public class KVTaskClient {
                 throw new StatusCodeException("Ошибка получения запроса. Код ошибки: " + response.statusCode());
             }
             return response.body();
-        } catch (StatusCodeException e) {
-            e.printStackTrace();
         } catch (IOException | InterruptedException e) {
-            System.out.println("Во время выполнения запроса возникла ошибка.\n" +
+            throw new StatusCodeException("Во время выполнения запроса возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
-        return null;
     }
 
     private void register() {
@@ -74,8 +71,8 @@ public class KVTaskClient {
         } catch (StatusCodeException e) {
             e.printStackTrace();
         } catch (IOException | InterruptedException e) {
-            System.out.println("Во время выполнения запроса /register возникла ошибка.\n" +
-                    "Проверьте, адрес и повторите попытку.");
+            throw new StatusCodeException("Во время выполнения запроса возникла ошибка.\n" +
+                    "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
     }
 }

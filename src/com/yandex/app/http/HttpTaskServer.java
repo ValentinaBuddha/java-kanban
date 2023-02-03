@@ -68,13 +68,12 @@ public class HttpTaskServer {
                     }
                     try {
                         Task task = gson.fromJson(bodyTask, Task.class);
-                        if (taskManager.getListOfTasks().stream().map(Task::getId).collect(Collectors.toList())
-                                .contains(task.getId())) {
-                            taskManager.updateTask(task);
-                            writeResponse(exchange, "Задача обновлена", 201);
-                        } else {
+                        if (task.getId() == null) {
                             taskManager.addTask(task);
                             writeResponse(exchange, "Задача добавлена", 201);
+                        } else {
+                            taskManager.updateTask(task);
+                            writeResponse(exchange, "Задача обновлена", 201);
                         }
                     } catch (JsonSyntaxException e) {
                         writeResponse(exchange, "Получен некорректный JSON", 400);
@@ -89,13 +88,12 @@ public class HttpTaskServer {
                     }
                     try {
                         Epic epic = gson.fromJson(bodyEpic, Epic.class);
-                        if (taskManager.getListOfEpics().stream().map(Epic::getId).collect(Collectors.toList())
-                                .contains(epic.getId())) {
-                            taskManager.updateEpic(epic);
-                            writeResponse(exchange, "Эпик обновлен", 201);
-                        } else {
+                        if (epic.getId() == null) {
                             taskManager.addEpic(epic);
                             writeResponse(exchange, "Эпик добавлен", 201);
+                        } else {
+                            taskManager.updateEpic(epic);
+                            writeResponse(exchange, "Эпик обновлен", 201);
                         }
                     } catch (JsonSyntaxException e) {
                         writeResponse(exchange, "Получен некорректный JSON", 400);
@@ -110,13 +108,12 @@ public class HttpTaskServer {
                     }
                     try {
                         Subtask subtask = gson.fromJson(bodySubtask, Subtask.class);
-                        if (taskManager.getListOfSubtasks().stream().map(Subtask::getId).collect(Collectors.toList())
-                                .contains(subtask.getId())) {
-                            taskManager.updateSubtask(subtask);
-                            writeResponse(exchange, "Подзадача обновлена", 201);
-                        } else {
+                        if (subtask.getId() == null) {
                             taskManager.addSubtask(subtask);
                             writeResponse(exchange, "Подзадача добавлена", 201);
+                        } else {
+                            taskManager.updateSubtask(subtask);
+                            writeResponse(exchange, "Подзадача обновлена", 201);
                         }
                     } catch (JsonSyntaxException e) {
                         writeResponse(exchange, "Получен некорректный JSON", 400);
