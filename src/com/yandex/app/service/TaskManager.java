@@ -5,7 +5,6 @@ import com.yandex.app.model.Subtask;
 import com.yandex.app.model.Task;
 
 import java.util.List;
-import java.util.Map;
 
 public interface TaskManager {
 

@@ -43,7 +43,7 @@ public class Subtask extends Task {
         Subtask subtask = (Subtask) o;
         return Objects.equals(title, subtask.title) &&
                 Objects.equals(description, subtask.description) &&
-                (id == subtask.id) &&
+                Objects.equals(id, subtask.id) &&
                 Objects.equals(status, subtask.status) &&
                 (epicId == subtask.epicId) &&
                 Objects.equals(startTime, subtask.startTime) &&

@@ -1,6 +1,6 @@
 package com.yandex.app.http;
 
-import com.yandex.app.exceptions.StatusCodeException;
+import com.yandex.app.exceptions.RequestException;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,12 +27,10 @@ public class KVTaskClient {
         try {
             HttpResponse<Void> response = client.send(request, HttpResponse.BodyHandlers.discarding());
             if (response.statusCode() != 200) {
-                throw new StatusCodeException("Ошибка получения запроса. Код ошибки: " + response.statusCode());
+                throw new RequestException("Ошибка получения запроса. Код ошибки: " + response.statusCode());
             }
-        } catch (StatusCodeException e) {
-            e.printStackTrace();
         } catch (IOException | InterruptedException e) {
-            throw new StatusCodeException("Во время выполнения запроса возникла ошибка.\n" +
+            throw new RequestException("Во время выполнения запроса возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
     }
@@ -46,11 +44,11 @@ public class KVTaskClient {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() != 200) {
-                throw new StatusCodeException("Ошибка получения запроса. Код ошибки: " + response.statusCode());
+                throw new RequestException("Ошибка получения запроса. Код ошибки: " + response.statusCode());
             }
             return response.body();
         } catch (IOException | InterruptedException e) {
-            throw new StatusCodeException("Во время выполнения запроса возникла ошибка.\n" +
+            throw new RequestException("Во время выполнения запроса возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
     }
@@ -66,12 +64,10 @@ public class KVTaskClient {
             if (response.statusCode() == 200) {
                 apiToken = response.body();
             } else {
-                throw new StatusCodeException("Ошибка получения запроса. Код ошибки: " + response.statusCode());
+                throw new RequestException("Ошибка получения запроса. Код ошибки: " + response.statusCode());
             }
-        } catch (StatusCodeException e) {
-            e.printStackTrace();
         } catch (IOException | InterruptedException e) {
-            throw new StatusCodeException("Во время выполнения запроса возникла ошибка.\n" +
+            throw new RequestException("Во время выполнения запроса возникла ошибка.\n" +
                     "Проверьте, пожалуйста, адрес и повторите попытку.");
         }
     }

@@ -113,7 +113,7 @@ public class Task {
         Task task = (Task) o;
         return Objects.equals(title, task.title) &&
                 Objects.equals(description, task.description) &&
-                (id == task.id) &&
+                Objects.equals(id, task.id) &&
                 Objects.equals(status, task.status) &&
                 Objects.equals(startTime, task.startTime) &&
                 (duration == task.duration);
