@@ -58,7 +58,7 @@ class HttpTaskManagerTest extends TaskManagerTest<HttpTaskManager> {
         assertEquals(4, httpTaskManager.getListOfSubtasks().get(1).getId(),
                 "Id после выгрузки не совпадает");
 
-        assertEquals(4, taskManager.generatorId,
+        assertEquals(httpTaskManager.generatorId, taskManager.generatorId,
                 "Идентификатор последней добавленной задачи после выгрузки не совпадает");
     }
 }
